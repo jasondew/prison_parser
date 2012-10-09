@@ -18,7 +18,9 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+    > require "prison_parser"
+    > prison = PrisonParser.new(File.read("your_save_game.prison"))
+    > prison["Rooms"] #=> Array of room hashes
 
 ## Contributing
 
