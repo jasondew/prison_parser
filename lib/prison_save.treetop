@@ -1,0 +1,67 @@
+grammar PrisonSave
+  rule root
+    statements
+    {
+      def value
+        Hash[elements.map(&:value)]
+      end
+    }
+  end
+
+  rule statements
+    (block / attribute)*
+  end
+
+  rule block
+    space "BEGIN" space name space statements space "END" space
+    {
+      def value
+        [name.value, Hash[statements.elements.map(&:value)]]
+      end
+    }
+  end
+
+  rule attribute
+    space name space attribute_value space
+    {
+      def value
+        [name.value, attribute_value.text_value]
+      end
+    }
+  end
+
+  rule name
+    !"BEGIN" !"END" (bare_name / quoted_name)
+    {
+      def value
+        elements.last.value
+      end
+    }
+  end
+
+  rule bare_name
+    attribute_value
+    {
+      def value
+        text_value
+      end
+    }
+  end
+
+  rule quoted_name
+    '"' [^"]+ '"'
+    {
+      def value
+        elements[1].text_value
+      end
+    }
+  end
+
+  rule attribute_value
+    [a-zA-Z0-9\.\-\[\]_]+
+  end
+
+  rule space
+    [\r\n 	]*
+  end
+end
